@@ -39,6 +39,24 @@
         </a>
     </div>
 
+    <div class="gpx-plotter">
+        <h2>Skitourenguru GPX Profiler</h2>
+        <div class="plotter-controls">
+            <input type="url" id="sg-url" placeholder="https://www.skitourenguru.com/?id=..." autocomplete="off">
+            <button id="plot-btn">Plot Route</button>
+        </div>
+
+        <div id="route-stats" class="route-stats hidden">
+            <span id="stat-gain">Gain: -- m</span>
+            <span id="stat-loss">Loss: -- m</span>
+        </div>
+
+        <div id="chart-wrapper" class="plot-container hidden">
+            <canvas id="elevation-chart"></canvas>
+        </div>
+        <div id="plot-error" class="error-msg"></div>
+    </div>
+
     <div class="webcam-container">
         <div class="webcam-wrapper">
             <iframe src="https://uetliberg.roundshot.com/#/" allowfullscreen title="Uetliberg Webcam"></iframe>
@@ -78,6 +96,9 @@
 
     <a href="index.html" class="nav-link">&larr; Back to Directory</a>
 
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="gpx-plotter.js"></script>
 </body>
 
 </html>

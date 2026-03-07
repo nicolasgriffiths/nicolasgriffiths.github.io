@@ -64,6 +64,97 @@ a.nav-link:hover {
     max-width: 1000px;
 }
 
+/* GPX Plotter */
+.gpx-plotter {
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    padding: 1rem 1.5rem;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.gpx-plotter h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.8rem 0;
+    font-weight: 500;
+}
+
+.plotter-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0;
+}
+
+#sg-url {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background-color: #121212;
+    color: #fff;
+    font-family: inherit;
+}
+
+#sg-url:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+#plot-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#plot-btn:hover {
+    background-color: #2563eb;
+}
+
+#plot-btn:disabled {
+    background-color: #3b82f688;
+    cursor: not-allowed;
+}
+
+.plot-container {
+    height: 300px;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.route-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #a0a0a0;
+}
+
+.route-stats span {
+    background: #2a2a2a;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error-msg {
+    color: #ef4444;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
 /* Webcam Container & Wrapper */
 .webcam-container {
     display: grid;
