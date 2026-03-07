@@ -133,6 +133,39 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
         document.getElementById('chart-wrapper').classList.remove('hidden');
         document.getElementById('alpinemeteo-wrapper').classList.remove('hidden');
 
+        // Calculate slope angles using 50m segments
+        const SEGMENT_SIZE = 0.05; // 50m in km
+        const slopeAngles = [0]; // first point has no slope
+        for (let i = 1; i < elevations.length; i++) {
+            // Look back to find a point approximately 50m earlier
+            let j = i - 1;
+            while (j > 0 && (distances[i] - distances[j]) < SEGMENT_SIZE) {
+                j--;
+            }
+            const dEle = Math.abs(elevations[i] - elevations[j]); // meters
+            const dDist = (distances[i] - distances[j]) * 1000; // km to meters
+            const angleRad = dDist > 0 ? Math.atan(dEle / dDist) : 0;
+            slopeAngles.push(angleRad * 180 / Math.PI);
+        }
+
+        // Slope color categories
+        const slopeColors = [
+            { min: 0, max: 5, color: 'rgba(76, 175, 80, 0.9)', fill: 'rgba(76, 175, 80, 0.25)', label: '0–5°' },
+            { min: 5, max: 15, color: 'rgba(139, 195, 74, 0.9)', fill: 'rgba(139, 195, 74, 0.25)', label: '5–15°' },
+            { min: 15, max: 25, color: 'rgba(255, 235, 59, 0.9)', fill: 'rgba(255, 235, 59, 0.25)', label: '15–25°' },
+            { min: 25, max: 30, color: 'rgba(255, 152, 0, 0.9)', fill: 'rgba(255, 152, 0, 0.25)', label: '25–30°' },
+            { min: 30, max: 35, color: 'rgba(244, 67, 54, 0.9)', fill: 'rgba(244, 67, 54, 0.25)', label: '30–35°' },
+            { min: 35, max: 40, color: 'rgba(183, 28, 28, 0.9)', fill: 'rgba(183, 28, 28, 0.25)', label: '35–40°' },
+            { min: 40, max: 90, color: 'rgba(156, 39, 176, 0.9)', fill: 'rgba(156, 39, 176, 0.25)', label: '40°+' },
+        ];
+
+        function getColorForSlope(angle, type) {
+            for (const sc of slopeColors) {
+                if (angle >= sc.min && angle < sc.max) return type === 'fill' ? sc.fill : sc.color;
+            }
+            return type === 'fill' ? slopeColors[slopeColors.length - 1].fill : slopeColors[slopeColors.length - 1].color;
+        }
+
         // Plotting
         const ctx = document.getElementById('elevation-chart').getContext('2d');
         if (elevationChart) elevationChart.destroy();
@@ -147,12 +180,16 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
                 datasets: [{
                     label: 'Elevation (m)',
                     data: elevations,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
                     borderWidth: 2,
-                    pointRadius: 0, // hide individual points for clean line
+                    pointRadius: 0,
                     fill: true,
-                    tension: 0.1
+                    tension: 0.1,
+                    segment: {
+                        borderColor: ctx => getColorForSlope(slopeAngles[ctx.p1DataIndex], 'border'),
+                        backgroundColor: ctx => getColorForSlope(slopeAngles[ctx.p1DataIndex], 'fill'),
+                    },
+                    borderColor: slopeColors[0].color,
+                    backgroundColor: slopeColors[0].fill,
                 }]
             },
             options: {
@@ -163,10 +200,15 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
                     intersect: false,
                 },
                 plugins: {
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             title: function (context) { return context[0].label + ' km'; },
-                            label: function (context) { return context.raw + ' m'; }
+                            label: function (context) {
+                                const idx = context.dataIndex;
+                                const slope = slopeAngles[idx] ? slopeAngles[idx].toFixed(1) : '0.0';
+                                return context.raw + ' m  (' + slope + '°)';
+                            }
                         }
                     },
                 },
@@ -181,6 +223,19 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
                 }
             }
         });
+
+        // Render custom slope legend
+        let legendEl = document.getElementById('slope-legend');
+        if (!legendEl) {
+            legendEl = document.createElement('div');
+            legendEl.id = 'slope-legend';
+            legendEl.className = 'slope-legend';
+            const chartWrapper = document.getElementById('chart-wrapper');
+            chartWrapper.parentNode.insertBefore(legendEl, chartWrapper.nextSibling);
+        }
+        legendEl.innerHTML = slopeColors.map(sc =>
+            `<span class="slope-legend-item"><span class="slope-swatch" style="background:${sc.color}"></span>${sc.label}</span>`
+        ).join('');
 
     } catch (err) {
         errorDiv.textContent = err.message;
