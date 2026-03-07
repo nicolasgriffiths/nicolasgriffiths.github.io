@@ -39,6 +39,11 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
         const paddedId = routeId.padStart(6, '0');
         const gpxUrl = `https://www.skitourenguru.com/calc_data2/gpx/Alps_ID${paddedId}.gpx`;
 
+        // Update the page URL so it's shareable
+        const pageUrl = new URL(window.location);
+        pageUrl.searchParams.set('route', routeId);
+        history.replaceState(null, '', pageUrl);
+
         const btn = document.getElementById('plot-btn');
         const oldText = btn.textContent;
         btn.textContent = 'Fetching...';
@@ -256,3 +261,13 @@ document.getElementById('sg-url').addEventListener('keydown', (e) => {
         document.getElementById('plot-btn').click();
     }
 });
+
+// Auto-load route from URL parameter (e.g. ?route=4221)
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    const routeParam = params.get('route');
+    if (routeParam) {
+        document.getElementById('sg-url').value = `https://www.skitourenguru.com/?id=${routeParam}`;
+        document.getElementById('plot-btn').click();
+    }
+})();
