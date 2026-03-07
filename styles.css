@@ -26,13 +26,25 @@ p {
 
 /* Modern link/button styling */
 a.nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
     color: #fff;
     text-decoration: none;
-    padding: 0.75rem 1.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
     border: 1px solid #333;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: #1a1a1a;
     transition: all 0.2s ease-in-out;
+}
+
+.link-logo {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    object-fit: contain;
 }
 
 a.nav-link:hover {
@@ -46,10 +58,10 @@ a.nav-link:hover {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.6rem;
     margin: 1rem auto 2rem;
-    width: 90%;
-    max-width: 800px;
+    width: 95%;
+    max-width: 1000px;
 }
 
 /* Webcam Container & Wrapper */
