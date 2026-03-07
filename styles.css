@@ -40,3 +40,107 @@ a.nav-link:hover {
     color: #000;
     border-color: #fff;
 }
+
+/* Useful Links Section */
+.useful-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem auto 2rem;
+    width: 90%;
+    max-width: 800px;
+}
+
+/* Webcam Container & Wrapper */
+.webcam-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    width: 95%;
+    max-width: 1800px;
+    margin: 2rem auto;
+}
+
+@media (max-width: 768px) {
+    .webcam-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.webcam-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+    background: #1e1e1e;
+    /* Placeholder loading color */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+}
+
+.webcam-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.webcam-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background: transparent;
+    cursor: pointer;
+}
+
+.webcam-overlay:hover {
+    background: rgba(0, 0, 0, 0.05);
+    /* Slight tint on hover to indicate interactability */
+}
+
+/* Add a pseudo-element instruction that disappears on click */
+.webcam-overlay::after {
+    content: "Click to interact";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.webcam-overlay:hover::after {
+    opacity: 1;
+}
+
+.webcam-annotation {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    z-index: 10;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
