@@ -113,6 +113,19 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
 
         document.getElementById('alpinemeteo-frame').src = `https://www.alpinemeteo.com/hsgam?x=${am_x}&y=${am_y}`;
 
+        // Extract route name from GPX
+        const trkName = gpxDoc.querySelector('trk > name');
+        const routeTitleEl = document.getElementById('route-title');
+        if (trkName && trkName.textContent) {
+            // Strip the leading ID number (e.g. "4221 - Stotzigen Firsten (Realp)" -> "Stotzigen Firsten (Realp)")
+            const rawName = trkName.textContent;
+            const cleanName = rawName.replace(/^\d+\s*-\s*/, '');
+            routeTitleEl.innerHTML = `<a href="${urlInput}" target="_blank">${cleanName}</a>`;
+            routeTitleEl.classList.remove('hidden');
+        } else {
+            routeTitleEl.classList.add('hidden');
+        }
+
         // Update stats UI
         document.getElementById('stat-gain').innerHTML = `Gain: <strong>+${Math.round(totalGain)} m</strong>`;
         document.getElementById('stat-loss').innerHTML = `Loss: <strong>-${Math.round(totalLoss)} m</strong>`;
@@ -174,6 +187,7 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
         const btn = document.getElementById('plot-btn');
         btn.textContent = 'Plot Route';
         btn.disabled = false;
+        document.getElementById('route-title').classList.add('hidden');
         document.getElementById('route-stats').classList.add('hidden');
         document.getElementById('chart-wrapper').classList.add('hidden');
         if (document.getElementById('alpinemeteo-wrapper')) document.getElementById('alpinemeteo-wrapper').classList.add('hidden');
