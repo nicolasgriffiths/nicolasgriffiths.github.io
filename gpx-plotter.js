@@ -63,6 +63,10 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
         let totalGain = 0;
         let totalLoss = 0;
 
+        let maxEle = -Infinity;
+        let maxEleLat = null;
+        let maxEleLon = null;
+
         for (let i = 0; i < trkpts.length; i++) {
             const pt = trkpts[i];
             const lat = parseFloat(pt.getAttribute("lat"));
@@ -71,6 +75,12 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
             const ele = eleNodes.length > 0 ? parseFloat(eleNodes[0].textContent) : null;
 
             if (lat && lon && ele !== null) {
+                if (ele > maxEle) {
+                    maxEle = ele;
+                    maxEleLat = lat;
+                    maxEleLon = lon;
+                }
+
                 if (elevations.length > 0) {
                     const diff = ele - elevations[elevations.length - 1];
                     if (diff > 0) totalGain += diff;
@@ -97,11 +107,18 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
 
         if (elevations.length === 0) throw new Error("No valid elevation data found.");
 
+        // Calculate AlpineMeteo Coordinates (EPSG:3857) from max elevation point
+        const am_x = Math.round(maxEleLon * 20037508.34 / 180);
+        const am_y = Math.round(Math.log(Math.tan(Math.PI / 4 + (maxEleLat * Math.PI / 180) / 2)) * 20037508.34 / Math.PI);
+
+        document.getElementById('alpinemeteo-frame').src = `https://www.alpinemeteo.com/hsgam?x=${am_x}&y=${am_y}`;
+
         // Update stats UI
         document.getElementById('stat-gain').innerHTML = `Gain: <strong>+${Math.round(totalGain)} m</strong>`;
         document.getElementById('stat-loss').innerHTML = `Loss: <strong>-${Math.round(totalLoss)} m</strong>`;
         document.getElementById('route-stats').classList.remove('hidden');
         document.getElementById('chart-wrapper').classList.remove('hidden');
+        document.getElementById('alpinemeteo-wrapper').classList.remove('hidden');
 
         // Plotting
         const ctx = document.getElementById('elevation-chart').getContext('2d');
@@ -159,6 +176,7 @@ document.getElementById('plot-btn').addEventListener('click', async () => {
         btn.disabled = false;
         document.getElementById('route-stats').classList.add('hidden');
         document.getElementById('chart-wrapper').classList.add('hidden');
+        if (document.getElementById('alpinemeteo-wrapper')) document.getElementById('alpinemeteo-wrapper').classList.add('hidden');
     }
 });
 
